@@ -19,8 +19,8 @@ export async function getBoards(): Promise<IBoard[]> {
   return response.boards;
 }
 
-export async function putBoardUpdates(boardData: IBoard): Promise<string> {
-  const response = await api.put<unknown, { result: string }>(`board/${boardData.id}`, boardData);
+export async function putBoardUpdates(boardData: IBoard, boardId: number): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}`, boardData);
   return response.result;
 }
 

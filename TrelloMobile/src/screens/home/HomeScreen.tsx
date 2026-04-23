@@ -1,0 +1,86 @@
+import React, { JSX, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useBoards } from '../../hooks/useBoards';
+import { BoardCard } from '../../components/BoardCard';
+import { AddBoardModal } from '../../components/AddBoardModal';
+import { COLORS, globalStyles } from '../../styles/globalStyles';
+import { fetchAllBoardsThunk } from '../../store/boardsSlice';
+import { AppDispatch } from '../../store/store';
+
+export type RootStackParamList = {
+  Home: undefined;
+  Board: { boardId: number };
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export function HomeScreen({ navigation }: Props): JSX.Element {
+  const { boards, createBoard } = useBoards();
+  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(fetchAllBoardsThunk());
+  }, [dispatch]);
+
+  const handleAddBoard = async (title: string): Promise<void> => {
+    const success = await createBoard(title, '');
+    if (success) setModalVisible(false);
+  };
+  const onRefresh = (): void => {
+    dispatch(fetchAllBoardsThunk());
+  };
+  return (
+    <SafeAreaView style={globalStyles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Мої дошки</Text>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addBtn}>
+          <Text style={styles.addBtnText}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={boards}
+        keyExtractor={(item) => (item.id ? item.id.toString() : Math.random().toString())}
+        renderItem={({ item }) => (
+          <BoardCard
+            title={item.title}
+            listCount={item.lists?.length ?? 0}
+            cardCount={0}
+            onPress={() => navigation.navigate('Board', { boardId: item.id ?? 0 })}
+          />
+        )}
+        contentContainerStyle={styles.boardsList}
+        onRefresh={onRefresh}
+        refreshing={false}
+      />
+
+      <AddBoardModal isVisible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddBoard} />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+  },
+  headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.text },
+  boardsList: { padding: 15 },
+  addBtn: {
+    backgroundColor: COLORS.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addBtnText: { color: '#fff', fontSize: 24, fontWeight: 'bold' },
+});

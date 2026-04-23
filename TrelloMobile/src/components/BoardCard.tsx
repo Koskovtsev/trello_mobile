@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { COLORS, globalStyles } from "../styles/globalStyles";
+import { JSX } from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { COLORS, globalStyles } from '../styles/globalStyles';
 
 interface BoardCardProps {
   title: string;
@@ -8,14 +9,14 @@ interface BoardCardProps {
   onPress: () => void;
 }
 
-export const BoardCard: React.FC<BoardCardProps> = ({ title, listCount, cardCount, onPress }) => {
+export function BoardCard({ title, listCount, cardCount, onPress }: BoardCardProps): JSX.Element {
   return (
     <TouchableOpacity style={[styles.card, globalStyles.shadow]} onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{`${listCount} lists • ${cardCount} cards`}</Text>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
