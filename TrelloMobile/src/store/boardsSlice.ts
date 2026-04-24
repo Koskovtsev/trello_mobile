@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Alert } from 'react-native';
 import { IBoard } from '../common/interfaces/IBoard';
-import { getBoard, getBoards, putBoardUpdates } from '../api/boardsService';
+import { deleteBoard, getBoard, getBoards, putBoardUpdates } from '../api/boardsService';
 
 interface UpdateBoardPayload {
   boardId: number;
@@ -24,7 +24,20 @@ export const fetchBoardThunk = createAsyncThunk('board/fetchBoard', async (board
     if (!response) return rejectWithValue('No board found');
     return { ...response, id: Number(boardId) };
   } catch (error) {
-    Alert.alert(`Error getting borad data.`);
+    Alert.alert(`Error getting board data id: ${boardId}`);
+    return rejectWithValue(error);
+  }
+});
+
+export const deleteBoardThunk = createAsyncThunk('board/deleteBoard', async (boardId: number, { rejectWithValue }) => {
+  try {
+    // eslint-disable-next-line no-console
+    // console.log(`хочу видалити дошку з айді: ${boardId}`);
+    const response = await deleteBoard(boardId);
+    if (response !== 'Deleted') return rejectWithValue('No board found');
+    return boardId;
+  } catch (error) {
+    Alert.alert(`Error deleting board id: ${boardId}`);
     return rejectWithValue(error);
   }
 });
@@ -38,7 +51,7 @@ export const updateBoardThunk = createAsyncThunk(
       if (response !== 'Updated') return rejectWithValue('No board found');
       return { ...boardData, id: boardId };
     } catch (error) {
-      Alert.alert(`Error updating borad properties.`);
+      Alert.alert(`Error updating board properties id: ${boardId}`);
       return rejectWithValue(error);
     }
   }
@@ -74,6 +87,14 @@ const boardSlice = createSlice({
       const boardIndex = state.boards.findIndex((board) => board.id === updatedBoard.id);
       if (boardIndex !== -1) {
         builderState.boards[boardIndex].title = updatedBoard.title;
+      }
+    });
+    builder.addCase(deleteBoardThunk.fulfilled, (state, action) => {
+      const deletedBoardId = action.payload;
+      const builderState = state;
+      builderState.boards = state.boards.filter((board) => board.id !== deletedBoardId);
+      if (builderState.activeBoard && builderState.activeBoard.id === deletedBoardId) {
+        builderState.activeBoard = null;
       }
     });
   },

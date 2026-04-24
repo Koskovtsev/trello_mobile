@@ -9,6 +9,8 @@ import { AddBoardModal } from '../../components/AddBoardModal';
 import { COLORS, globalStyles } from '../../styles/globalStyles';
 import { fetchAllBoardsThunk } from '../../store/boardsSlice';
 import { AppDispatch } from '../../store/store';
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { IBoard } from '../../common/interfaces/IBoard';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -20,6 +22,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export function HomeScreen({ navigation }: Props): JSX.Element {
   const { boards, createBoard } = useBoards();
   const [modalVisible, setModalVisible] = useState(false);
+  const [deletingBoard, setDeletingBoard] = useState<IBoard | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(fetchAllBoardsThunk());
@@ -29,6 +32,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     const success = await createBoard(title, '');
     if (success) setModalVisible(false);
   };
+  const { deleteBoardById } = useBoards();
   const onRefresh = (): void => {
     dispatch(fetchAllBoardsThunk());
   };
@@ -48,7 +52,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           <BoardCard
             title={item.title}
             listCount={item.lists?.length ?? 0}
-            cardCount={0}
+            onDelete={() => setDeletingBoard(item)}
             onPress={() => navigation.navigate('Board', { boardId: item.id ?? 0 })}
           />
         )}
@@ -58,6 +62,15 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       />
 
       <AddBoardModal isVisible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddBoard} />
+      <ConfirmModal
+        isOpen={!!deletingBoard}
+        onClose={() => setDeletingBoard(null)}
+        onConfirm={() => {
+          deleteBoardById(deletingBoard!.id ?? 0);
+          setDeletingBoard(null);
+        }}
+        message={`Видалити дошку "${deletingBoard?.title}"?`}
+      />
     </SafeAreaView>
   );
 }

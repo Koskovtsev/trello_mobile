@@ -11,7 +11,6 @@ export type RootStackParamList = {
   Home: undefined;
   Board: { boardId: number };
 };
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Board'>;
 
 export function BoardScreen({ route }: Props): JSX.Element {
@@ -25,13 +24,7 @@ export function BoardScreen({ route }: Props): JSX.Element {
   if (!activeBoard) {
     return <ActivityIndicator size="large" style={{ flex: 1 }} />;
   }
-  //   const refreshBoard = (): void => {
-  //     if (boardId) {
-  //       dispatch(fetchBoardThunk(Number(boardId)));
-  //     }
-  //   };
   const { handleSaveTitle } = useBoard({ boardId });
-  // const { handleDeleteBoard } = useBoard({ boardId, boardData: activeBoard, refreshBoard });
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -69,7 +62,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bbb',
   },
-  titleWrapper: { flexDirection: 'row', alignItems: 'center' },
+  titleWrapper: { flexDirection: 'row', alignItems: 'flex-start' },
   headerText: { fontSize: 20, color: '#fff', fontWeight: 'bold' },
 
   main: { backgroundColor: '#444', flex: 1, width: '100%', padding: 10 },
