@@ -1,11 +1,26 @@
+import {
+  useWindowDimensions,
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { JSX, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { fetchBoardThunk } from '../../store/boardsSlice';
 import { useBoard } from './hooks/useBoard';
 import { ChangeTitle } from './changeTitle/ChangeTitle';
+import { ListItem } from './components/ListItem/ListItem';
+import { getBoardLayout } from './utils/boardLayout';
+import { fetchBoardThunk } from '../../store/boards/thunks';
+import { AddList } from './components/ListItem/AddList';
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { IList } from '../../common/interfaces/IList';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -14,46 +29,93 @@ export type RootStackParamList = {
 type Props = NativeStackScreenProps<RootStackParamList, 'Board'>;
 
 export function BoardScreen({ route }: Props): JSX.Element {
-  const { boardId } = route.params || { boardId: 'Unknown' };
   const dispatch = useDispatch<AppDispatch>();
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const { itemWidth, gap, sidePadding } = getBoardLayout(SCREEN_WIDTH);
   const [isVisibleChangeTitle, setVisibleChangeTitile] = useState(false);
+  const [deletingList, setDeletingList] = useState<IList | null>(null);
+  const { boardId } = route.params;
   const { activeBoard } = useSelector((state: RootState) => state.boards);
+  const { handleSaveTitle } = useBoard({ boardId });
+  const { deleteListById } = useBoard({ boardId });
+  const lists = activeBoard?.lists ?? [];
+  const snapOffsets = useMemo(() => lists.map((_, index) => index * (itemWidth + gap)), [lists.length, itemWidth, gap]);
+
   useEffect(() => {
     dispatch(fetchBoardThunk(boardId));
   }, [dispatch, boardId]);
+
   if (!activeBoard) {
-    return <ActivityIndicator size="large" style={{ flex: 1 }} />;
+    return <ActivityIndicator size="large" style={styles.activityIndicator} />;
   }
-  const { handleSaveTitle } = useBoard({ boardId });
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {!isVisibleChangeTitle ? (
-          <Pressable onPress={() => setVisibleChangeTitile(true)} style={styles.titleWrapper}>
-            <Text style={styles.headerText}>{activeBoard.title}</Text>
-          </Pressable>
-        ) : (
-          <ChangeTitle
-            currentTitle={activeBoard.title}
-            onTitleChanged={(title) => handleSaveTitle(title, setVisibleChangeTitile)}
-            onCancel={() => setVisibleChangeTitile(false)}
+    <>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            {!isVisibleChangeTitle ? (
+              <Pressable onPress={() => setVisibleChangeTitile(true)} style={styles.titleWrapper}>
+                <Text style={styles.headerText}>{activeBoard.title}</Text>
+              </Pressable>
+            ) : (
+              <ChangeTitle
+                currentTitle={activeBoard.title}
+                onTitleChanged={(title) => handleSaveTitle(title, setVisibleChangeTitile)}
+                onCancel={() => setVisibleChangeTitile(false)}
+              />
+            )}
+          </View>
+          <FlatList
+            style={styles.listsWrapper}
+            data={activeBoard.lists}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToOffsets={snapOffsets}
+            snapToAlignment="center"
+            snapToInterval={itemWidth + gap}
+            disableIntervalMomentum
+            decelerationRate="fast"
+            ListFooterComponent={<AddList width={itemWidth} boardId={boardId} />}
+            ListFooterComponentStyle={{ marginRight: -sidePadding / 2 }}
+            contentContainerStyle={{ paddingHorizontal: sidePadding }}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <ListItem
+                listItem={item}
+                boardId={boardId}
+                onDeleteList={(list) => setDeletingList(list)}
+                width={itemWidth}
+                marginRight={gap}
+              />
+            )}
           />
-        )}
-      </View>
-      <View style={styles.main}>
-        <Text style={{ fontSize: 18 }}>Ви на дошці з ID:{boardId}!</Text>
-        <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{activeBoard.title}</Text>
-        <Text>Списків на цій дошці: {activeBoard.lists?.length || 0}</Text>
-      </View>
-    </View>
+        </View>
+      </KeyboardAvoidingView>
+      <ConfirmModal
+        isOpen={!!deletingList}
+        onClose={() => setDeletingList(null)}
+        onConfirm={() => {
+          deleteListById(deletingList!);
+          setDeletingList(null);
+        }}
+        message={`Видалити список "${deletingList?.title}"?`}
+      />
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5' },
+  activityIndicator: { flex: 1 },
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    backgroundColor: '#aaa',
+  },
   header: {
-    backgroundColor: '#282828',
-    height: 60,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    height: 55,
     width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'space-around',
@@ -62,8 +124,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bbb',
   },
-  titleWrapper: { flexDirection: 'row', alignItems: 'flex-start' },
+  titleWrapper: {
+    flex: 1,
+  },
   headerText: { fontSize: 20, color: '#fff', fontWeight: 'bold' },
-
-  main: { backgroundColor: '#444', flex: 1, width: '100%', padding: 10 },
+  listsWrapper: {
+    flex: 1,
+    width: '100%',
+    marginTop: 10,
+    gap: 10,
+  },
 });

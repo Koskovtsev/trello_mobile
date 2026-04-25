@@ -7,10 +7,10 @@ import { useBoards } from '../../hooks/useBoards';
 import { BoardCard } from '../../components/BoardCard';
 import { AddBoardModal } from '../../components/AddBoardModal';
 import { COLORS, globalStyles } from '../../styles/globalStyles';
-import { fetchAllBoardsThunk } from '../../store/boardsSlice';
 import { AppDispatch } from '../../store/store';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { IBoard } from '../../common/interfaces/IBoard';
+import { fetchAllBoardsThunk } from '../../store/boards/thunks';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -24,6 +24,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [modalVisible, setModalVisible] = useState(false);
   const [deletingBoard, setDeletingBoard] = useState<IBoard | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const { deleteBoardById } = useBoards();
   useEffect(() => {
     dispatch(fetchAllBoardsThunk());
   }, [dispatch]);
@@ -32,7 +33,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     const success = await createBoard(title, '');
     if (success) setModalVisible(false);
   };
-  const { deleteBoardById } = useBoards();
   const onRefresh = (): void => {
     dispatch(fetchAllBoardsThunk());
   };

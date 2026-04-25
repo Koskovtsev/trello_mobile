@@ -11,7 +11,7 @@ interface Props {
 export function AddBoardModal({ isVisible, onClose, onAdd }: Props): JSX.Element {
   const [title, setTitle] = useState('');
 
-  const handleAdd = () => {
+  const handleAdd = (): void => {
     if (title.trim()) {
       onAdd(title);
       setTitle('');

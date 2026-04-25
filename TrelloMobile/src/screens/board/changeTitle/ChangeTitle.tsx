@@ -1,5 +1,5 @@
 import { JSX, useState } from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
+import { TextInput, View, StyleSheet, Text, Pressable } from 'react-native';
 import { validateTitle } from '../../../common/validador';
 
 interface ChangeTitleProps {
@@ -24,33 +24,61 @@ export function ChangeTitle({ currentTitle, onTitleChanged, onCancel }: ChangeTi
     }
   }
   return (
-    <View style={styles.inputWrapper}>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={(text) => {
-          if (!validateTitle(text)) {
-            setError(true);
-          } else {
-            setError(false);
-          }
-          setTitle(text);
-        }}
-        autoFocus
-        onBlur={() => handleSubmitTitle()}
-        onSubmitEditing={() => handleSubmitTitle()}
-      />
-    </View>
+    <>
+      <Pressable style={styles.overlay} onPress={() => handleSubmitTitle()} />
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={[styles.input, isError && styles.errorInput]}
+          value={title}
+          onChangeText={(text) => {
+            if (!validateTitle(text)) {
+              setError(true);
+            } else {
+              setError(false);
+            }
+            setTitle(text);
+          }}
+          placeholder={!title ? 'Введіть назву...' : ''}
+          autoFocus
+          // onBlur={() => handleSubmitTitle()}
+          onSubmitEditing={() => handleSubmitTitle()}
+        />
+        {isError && <Text style={styles.errorMessage}>Назва занадто коротка або введені недопустимі символи</Text>}
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  inputWrapper: { flex: 1 },
+  overlay: {
+    position: 'absolute',
+    top: -2000,
+    left: -1000,
+    right: -1000,
+    bottom: -2000,
+    backgroundColor: 'transparent',
+    zIndex: 10,
+  },
+  inputWrapper: {
+    flex: 1,
+    zIndex: 20,
+  },
   input: {
     color: '#fff',
     fontSize: 20,
+    // backgroundColor: '#ccc',
+    fontWeight: 600,
+    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#007AFF',
     padding: 0,
+    textAlignVertical: 'center',
+  },
+  errorInput: {
+    borderBottomColor: 'red',
+  },
+  errorMessage: {
+    color: '#fff',
+    fontSize: 10,
   },
 });

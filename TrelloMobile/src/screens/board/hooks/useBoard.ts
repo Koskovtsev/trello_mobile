@@ -1,18 +1,19 @@
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
-// import { deleteBoard } from '../../../api/boardsService';
 import { IBoard } from '../../../common/interfaces/IBoard';
 import { AppDispatch } from '../../../store/store';
-import { updateBoardThunk } from '../../../store/boardsSlice';
+import { deleteListThunk, fetchBoardThunk, updateBoardThunk } from '../../../store/boards/thunks';
+import { IList } from '../../../common/interfaces/IList';
 
-interface IUseCardData {
+interface IUseBoardData {
   handleSaveTitle(title: string, setVisibleChangeTitile: (isVisible: boolean) => void): void;
+  deleteListById(listItem: IList): Promise<void>;
 }
-interface IUseCardProps {
+interface IUseBoardProps {
   boardId: number;
   boardData?: IBoard;
 }
-export function useBoard({ boardId }: IUseCardProps): IUseCardData {
+export function useBoard({ boardId }: IUseBoardProps): IUseBoardData {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSaveTitle = async (
@@ -31,5 +32,19 @@ export function useBoard({ boardId }: IUseCardProps): IUseCardData {
       setVisibleChangeTitile(false);
     }
   };
-  return { handleSaveTitle };
+
+  const deleteListById = async (listItem: IList): Promise<void> => {
+    try {
+      if (!listItem.id) return;
+      const payload = {
+        boardId,
+        listData: listItem,
+      };
+      dispatch(deleteListThunk(payload)).unwrap();
+      await dispatch(fetchBoardThunk(boardId));
+    } catch (error) {
+      Alert.alert(`Error deleting list`);
+    }
+  };
+  return { handleSaveTitle, deleteListById };
 }

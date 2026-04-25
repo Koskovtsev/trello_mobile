@@ -11,7 +11,6 @@ interface ConfirmModalProps {
 export function ConfirmModal({ isOpen, onClose, onConfirm, message }: ConfirmModalProps): JSX.Element {
   return (
     <Modal visible={isOpen} transparent animationType="fade">
-      {/* Pressable тут дозволяє закрити модалку, якщо клікнути "мимо" вікна */}
       <Pressable style={styles.modalOverlay} onPress={() => onClose(false)}>
         <View style={styles.modalContent}>
           <Text style={styles.modalText}>{message}</Text>
@@ -22,7 +21,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, message }: ConfirmMod
             <View style={styles.buttonWrapper}>
               <Button
                 title="Видалити"
-                color="#FF3B30" // Гарний червоний колір (iOS style)
+                color="#FF3B30"
                 onPress={() => {
                   onConfirm();
                   onClose(false);
@@ -39,7 +38,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, message }: ConfirmMod
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Напівпрозорий чорний фон
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -50,12 +49,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 14,
     padding: 20,
-    // Тіні для iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    // Тіні для Android
     elevation: 5,
   },
   modalText: {
@@ -73,31 +70,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-//     <Modal visible={isOpen} transparent animationType="fade">
-//       <View style={styles.modalOverlay}>
-//         <View style={styles.modalContent}>
-//           <Text style={styles.modalText}>Видалити цю дошку?</Text>
-//           <View style={styles.modalButtons}>
-//             <Button title="Скасувати" onPress={() => onClose(false)} />
-//             <Button
-//               title={message}
-//               color="red"
-//               onPress={() => {
-//                 onConfirm();
-//                 onClose(false);
-//               }}
-//             />
-//           </View>
-//         </View>
-//       </View>
-//     </Modal>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   modalOverlay: { backgroundColor: '#fff' },
-//   modalContent: {},
-//   modalText: {},
-//   modalButtons: {},
-// });

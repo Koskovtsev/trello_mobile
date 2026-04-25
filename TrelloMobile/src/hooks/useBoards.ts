@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { postNewBoard } from '../api/boardsService';
 import { IBoard } from '../common/interfaces/IBoard';
 import { AppDispatch, RootState } from '../store/store';
-import { deleteBoardThunk, fetchAllBoardsThunk } from '../store/boardsSlice';
+import { deleteBoardThunk, fetchAllBoardsThunk } from '../store/boards/thunks';
 
 interface IUseBoardData {
   boards: IBoard[];
