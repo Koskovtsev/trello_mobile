@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IBoard } from '../../common/interfaces/IBoard';
 import {
   deleteBoardThunk,
+  deleteCardThunk,
   deleteListThunk,
   fetchAllBoardsThunk,
   fetchBoardThunk,
@@ -93,6 +94,14 @@ const boardSlice = createSlice({
       const deletedListId = action.payload.listData.id;
       if (!builderState.activeBoard?.lists) return;
       builderState.activeBoard.lists = builderState.activeBoard.lists.filter((list) => list.id !== deletedListId);
+    });
+    builder.addCase(deleteCardThunk.fulfilled, (state, action) => {
+      const { id: deletedCardId, list_id: currentListId } = action.payload.cardData;
+      if (!state.activeBoard) return;
+      const list = state.activeBoard.lists?.find((l) => l.id === currentListId);
+      if (list?.cards) {
+        list.cards = list.cards.filter((card) => card.id !== deletedCardId);
+      }
     });
   },
 });

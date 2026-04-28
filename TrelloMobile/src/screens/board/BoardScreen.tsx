@@ -22,8 +22,9 @@ import { fetchBoardThunk } from '../../store/boards/thunks';
 import { AddList } from './components/ListItem/AddList';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { IList } from '../../common/interfaces/IList';
-import { TexturePickerModal, textures } from '../../components/TexturePickerModal';
 import { openTextureModal } from '../../store/uiSlice';
+import { TexturePickerModal, textures } from './components/TexturePickerModal';
+import { CardMenuModal } from './components/CardMenuModal';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -119,6 +120,7 @@ export function BoardScreen({ route }: Props): JSX.Element {
         }}
         message={`Видалити список "${deletingList?.title}"?`}
       />
+      <CardMenuModal />
     </>
   );
 }

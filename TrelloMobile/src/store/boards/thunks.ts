@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { IBoard } from '../../common/interfaces/IBoard';
 import {
   deleteBoard,
+  deleteCard,
   deleteList,
   getBoard,
   getBoards,
@@ -143,6 +144,22 @@ export const updateCardThunk = createAsyncThunk<UpdateCardPayload, UpdateCardPay
     try {
       if (!cardData.id) return rejectWithValue('Card id is not found');
       const response = await putCardUpdates(boardId, cardData.id, cardData);
+      if (response !== 'Updated') return rejectWithValue('No card found');
+      return payload;
+    } catch (error) {
+      Alert.alert(`Error updating card propertes id: ${cardData.id}`);
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteCardThunk = createAsyncThunk<UpdateCardPayload, UpdateCardPayload, { rejectValue: unknown }>(
+  'card/deleteCard',
+  async (payload: UpdateCardPayload, { rejectWithValue }) => {
+    const { boardId, cardData } = payload;
+    try {
+      if (!cardData.id) return rejectWithValue('Card id is not found');
+      const response = await deleteCard(boardId, cardData.id);
       if (response !== 'Updated') return rejectWithValue('No card found');
       return payload;
     } catch (error) {

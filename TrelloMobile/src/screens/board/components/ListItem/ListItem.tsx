@@ -7,8 +7,8 @@ import { ChangeTitle } from '../../changeTitle/ChangeTitle';
 import { useList } from './hooks/useList';
 import { CardItem } from '../cardItem/CardItem';
 import { RootState } from '../../../../store/store';
-import { textures } from '../../../../components/TexturePickerModal';
 import { openTextureModal } from '../../../../store/uiSlice';
+import { textures } from '../TexturePickerModal';
 
 interface ListItemProps {
   listItem: IList;
@@ -29,15 +29,6 @@ function ListItemComponent({ listItem, boardId, onDeleteList, width, marginRight
       textere.name === (activeBoard?.custom?.listTextures ? activeBoard?.custom?.listTextures[listItem.id ?? 0] : 'car')
   );
   const flatListRef = useRef<FlatList>(null);
-  // useEffect(() => {
-  //   if (!isVisibleAddCardForm) return;
-
-  //   requestAnimationFrame(() => {
-  //     setTimeout(() => {
-  //       flatListRef.current?.scrollToEnd({ animated: true });  це геміні
-  //     }, 1000);
-  //   });
-  // }, [isVisibleAddCardForm]);
   const { handleSaveTitle } = useList({ boardId, listData: listItem });
   const { handleAddCard } = useList({ boardId, listData: listItem });
   return (
@@ -95,8 +86,6 @@ function ListItemComponent({ listItem, boardId, onDeleteList, width, marginRight
                 <View
                   style={styles.inputWrapper}
                   onLayout={() => {
-                    // Невеликий таймаут тут потрібен лише для того, щоб синхронізуватися
-                    // з кінцем анімації клавіатури, але відлік йде вже ПІСЛЯ появи елемента ГЕМІНІ!
                     setTimeout(() => {
                       flatListRef.current?.scrollToEnd({ animated: true });
                     }, 50);

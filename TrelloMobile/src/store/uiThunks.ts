@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateBoardThunk, updateCardThunk } from './boards/thunks';
 import { RootState } from './store';
+import { ICard } from '../common/interfaces/ICard';
 
 export const applyTexture = createAsyncThunk('texture/apply', async (texture: string, { getState, dispatch }) => {
   const state = getState() as RootState;
@@ -31,20 +32,27 @@ export const applyTexture = createAsyncThunk('texture/apply', async (texture: st
       break;
     }
 
-    case 'card':
+    case 'card': {
+      // 1. Знаходимо поточну картку в сторі, щоб взяти її існуючі дані
+      const list = board.lists?.find((l) => l.id === target.listId);
+      const currentCard = list?.cards?.find((c) => c.id === target.cardId);
+
       await dispatch(
         updateCardThunk({
           boardId: target.boardId,
           cardData: {
+            ...currentCard, // Розгортаємо всі існуючі поля (title, тощо)
             id: target.cardId,
             list_id: target.listId,
             custom: {
-              background: texture,
+              ...currentCard?.custom, // Зберігаємо старі поля в custom (isChecked!)
+              background: texture, // Оновлюємо тільки фон
             },
-          },
+          } as ICard,
         })
       );
       break;
+    }
 
     case 'board':
       await dispatch(

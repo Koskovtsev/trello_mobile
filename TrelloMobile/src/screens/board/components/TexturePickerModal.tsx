@@ -2,23 +2,23 @@ import { FontAwesome } from '@expo/vector-icons';
 import { JSX } from 'react';
 import { FlatList, ImageBackground, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/store';
-import { closeTextureModal } from '../store/uiSlice';
-import { applyTexture } from '../store/uiThunks';
+import { AppDispatch, RootState } from '../../../store/store';
+import { applyTexture } from '../../../store/uiThunks';
+import { closeTextureModal } from '../../../store/uiSlice';
 
 export const textures = [
-  { id: 1, name: 'yellow', source: require('../../assets/textur_yellow.jpg') },
-  { id: 2, name: 'pink_', source: require('../../assets/textur_pink.jpg') },
-  { id: 3, name: 'orange', source: require('../../assets/textur_orange.jpg') },
-  { id: 4, name: 'green', source: require('../../assets/textur_green.jpg') },
-  { id: 5, name: 'blue', source: require('../../assets/textur_blue.jpg') },
-  { id: 6, name: 'purple', source: require('../../assets/textur_purple.jpg') },
-  { id: 7, name: 'gray', source: require('../../assets/textur_gray.jpg') },
-  { id: 8, name: 'black', source: require('../../assets/textur_black.jpg') },
-  { id: 9, name: 'lakes', source: require('../../assets/textur_lakes.jpg') },
-  { id: 10, name: 'car', source: require('../../assets/textur_car.jpg') },
-  { id: 11, name: 'mountains', source: require('../../assets/textur_mountains.jpg') },
-  { id: 12, name: 'nature', source: require('../../assets/textur_nature.jpg') },
+  { id: 1, name: 'yellow', source: require('../../../../assets/textur_yellow.jpg') },
+  { id: 2, name: 'pink_', source: require('../../../../assets/textur_pink.jpg') },
+  { id: 3, name: 'orange', source: require('../../../../assets/textur_orange.jpg') },
+  { id: 4, name: 'green', source: require('../../../../assets/textur_green.jpg') },
+  { id: 5, name: 'blue', source: require('../../../../assets/textur_blue.jpg') },
+  { id: 6, name: 'purple', source: require('../../../../assets/textur_purple.jpg') },
+  { id: 7, name: 'gray', source: require('../../../../assets/textur_gray.jpg') },
+  { id: 8, name: 'black', source: require('../../../../assets/textur_black.jpg') },
+  { id: 9, name: 'lakes', source: require('../../../../assets/textur_lakes.jpg') },
+  { id: 10, name: 'car', source: require('../../../../assets/textur_car.jpg') },
+  { id: 11, name: 'mountains', source: require('../../../../assets/textur_mountains.jpg') },
+  { id: 12, name: 'nature', source: require('../../../../assets/textur_nature.jpg') },
 ];
 export function TexturePickerModal(): JSX.Element | null {
   const dispatch = useDispatch<AppDispatch>();

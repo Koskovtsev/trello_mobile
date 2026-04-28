@@ -2,7 +2,7 @@ import React, { JSX } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { COLORS, globalStyles } from '../styles/globalStyles';
-import { textures } from './TexturePickerModal';
+import { textures } from '../screens/board/components/TexturePickerModal';
 
 interface BoardCardProps {
   title: string;
@@ -12,7 +12,7 @@ interface BoardCardProps {
 }
 
 export function BoardCard({ title, texture, onPress, onDelete }: BoardCardProps): JSX.Element {
-  const currentTexture = textures.find((t) => t.name === (texture ?? 'car'));
+  const currentTexture = textures.find((t) => t.name === (texture ?? 'gray'));
   return (
     <Pressable style={[styles.card, globalStyles.shadow]} onPress={onPress}>
       <Image style={styles.boardPreview} source={currentTexture?.source} />

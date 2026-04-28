@@ -1,8 +1,12 @@
 import { JSX } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ImageBackground } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
 import { ICard } from '../../../../common/interfaces/ICard';
 import { useCard } from './hooks/useCard';
+import { AppDispatch } from '../../../../store/store';
+import { openCardModal } from '../../../../store/uiSlice';
+import { textures } from '../TexturePickerModal';
 
 interface CardItemProps {
   boardId: number;
@@ -11,10 +15,12 @@ interface CardItemProps {
 }
 
 export function CardItem({ boardId, listId, cardItem }: CardItemProps): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
   const isChecked = !!cardItem.custom?.isChecked;
+  const currentTexture = textures.find((textere) => textere.name === (cardItem.custom?.background ?? 'gray'));
   const { changeChekedStatus } = useCard({ boardId, listId, cardData: cardItem });
   return (
-    <View style={styles.cardContainer}>
+    <ImageBackground style={styles.cardContainer} source={currentTexture?.source}>
       <Pressable
         style={styles.checkButton}
         onPress={() => {
@@ -36,12 +42,13 @@ export function CardItem({ boardId, listId, cardItem }: CardItemProps): JSX.Elem
           onPress={() => {
             // eslint-disable-next-line prettier/prettier, no-console
             console.log(`натиснуто меню картки`);
+            dispatch(openCardModal({ boardId, listId, cardId: cardItem.id! }));
           }}
         >
           <FontAwesome name="pencil" size={28} color="#000" />
         </Pressable>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -51,6 +58,7 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: '#777',
     borderRadius: 5,
+    overflow: 'hidden',
     margin: 2,
     flexDirection: 'row',
     alignItems: 'center',
