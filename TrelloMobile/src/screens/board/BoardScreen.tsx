@@ -129,8 +129,6 @@ const styles = StyleSheet.create({
   activityIndicator: { flex: 1 },
   container: {
     flex: 1,
-    // justifyContent: 'flex-start',
-    // alignItems: 'flex-start',
     backgroundColor: '#aaa',
   },
   backgroundImage: { width: '100%' },
@@ -154,7 +152,11 @@ const styles = StyleSheet.create({
   titleWrapper: {
     flex: 1,
   },
-  headerText: { fontSize: 20, color: '#fff', fontWeight: 'bold' },
+  headerText: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   listsWrapper: {
     flex: 1,
     width: '100%',

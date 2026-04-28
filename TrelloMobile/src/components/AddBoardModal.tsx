@@ -40,12 +40,43 @@ export function AddBoardModal({ isVisible, onClose, onAdd }: AddBoardModalProps)
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
-  modalContainer: { backgroundColor: '#fff', padding: 20, borderRadius: 10 },
-  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 15 },
-  input: { borderBottomWidth: 1, borderBottomColor: COLORS.gray, padding: 10, marginBottom: 20 },
-  buttonGroup: { flexDirection: 'row', justifyContent: 'flex-end' },
-  cancelBtn: { padding: 10, marginRight: 10 },
-  addBtn: { backgroundColor: COLORS.primary, padding: 10, borderRadius: 5 },
-  addText: { color: '#fff', fontWeight: 'bold' },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+    padding: 10,
+    marginBottom: 20,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  cancelBtn: {
+    padding: 10,
+    marginRight: 10,
+  },
+  addBtn: {
+    backgroundColor: COLORS.primary,
+    padding: 10,
+    borderRadius: 5,
+  },
+  addText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });

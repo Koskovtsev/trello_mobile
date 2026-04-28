@@ -8,7 +8,6 @@ export interface ICard {
   custom?: {
     isChecked?: boolean;
     background?: string;
-    // [key: string]: string | number | boolean | undefined;
   };
   // users?: number[];
   // created_at?: number; це для авторизації

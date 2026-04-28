@@ -40,8 +40,6 @@ export function CardItem({ boardId, listId, cardItem }: CardItemProps): JSX.Elem
         <Pressable
           style={styles.cardMenuButton}
           onPress={() => {
-            // eslint-disable-next-line prettier/prettier, no-console
-            console.log(`натиснуто меню картки`);
             dispatch(openCardModal({ boardId, listId, cardId: cardItem.id! }));
           }}
         >
