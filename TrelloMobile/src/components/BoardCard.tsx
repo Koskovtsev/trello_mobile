@@ -1,54 +1,65 @@
 import React, { JSX } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { COLORS, globalStyles } from '../styles/globalStyles';
+import { textures } from './TexturePickerModal';
 
 interface BoardCardProps {
   title: string;
-  listCount: number;
+  texture: string;
   onPress: () => void;
   onDelete: () => void;
 }
 
-export function BoardCard({ title, listCount, onPress, onDelete }: BoardCardProps): JSX.Element {
+export function BoardCard({ title, texture, onPress, onDelete }: BoardCardProps): JSX.Element {
+  const currentTexture = textures.find((t) => t.name === (texture ?? 'car'));
   return (
     <Pressable style={[styles.card, globalStyles.shadow]} onPress={onPress}>
-      <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>Списків: {listCount}</Text>
+      <Image style={styles.boardPreview} source={currentTexture?.source} />
+      <View style={styles.footer}>
+        <View style={styles.content}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
+        <Pressable
+          style={styles.deleteButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+        >
+          <FontAwesome name="trash" size={20} color={COLORS.darkRed} />
+        </Pressable>
       </View>
-      <Pressable
-        style={styles.deleteButton}
-        onPress={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-      >
-        <FontAwesome name="trash" size={20} color="#991111" />
-      </Pressable>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
     backgroundColor: COLORS.primary,
-    padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'space-between',
     elevation: 2,
     height: 150,
+    overflow: 'hidden',
+  },
+  boardPreview: {
+    width: '100%',
+    height: 110,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   content: { flex: 1 },
   title: {
+    marginLeft: 10,
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.white,
   },
-  subtitle: { color: COLORS.lightGray },
   deleteButton: {
     padding: 10,
     marginLeft: 10,

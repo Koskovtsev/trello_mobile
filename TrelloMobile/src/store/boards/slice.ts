@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IBoard } from '../../common/interfaces/IBoard';
 import {
-  createCardThunk,
   deleteBoardThunk,
   deleteListThunk,
   fetchAllBoardsThunk,
@@ -37,15 +36,27 @@ const boardSlice = createSlice({
     builder.addCase(updateBoardThunk.fulfilled, (state, action) => {
       const builderState = state;
       const updatedBoard = action.payload;
-      if (!updatedBoard) return;
-      if (builderState.activeBoard) {
-        if (!builderState.activeBoard.id || builderState.activeBoard.id === updatedBoard.id) {
-          builderState.activeBoard.title = updatedBoard.title;
-        }
+      if (!updatedBoard || !builderState.activeBoard) return;
+      if (builderState.activeBoard.id === updatedBoard.id) {
+        builderState.activeBoard = {
+          ...state.activeBoard,
+          ...updatedBoard,
+          custom: {
+            ...state.activeBoard?.custom,
+            ...updatedBoard.custom,
+          },
+        };
       }
       const boardIndex = state.boards.findIndex((board) => board.id === updatedBoard.id);
       if (boardIndex !== -1) {
-        builderState.boards[boardIndex].title = updatedBoard.title;
+        builderState.boards[boardIndex] = {
+          ...state.boards[boardIndex],
+          title: updatedBoard.title,
+          custom: {
+            ...state.boards[boardIndex].custom,
+            background: updatedBoard.custom?.background,
+          },
+        };
       }
     });
     builder.addCase(deleteBoardThunk.fulfilled, (state, action) => {

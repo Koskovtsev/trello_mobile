@@ -46,5 +46,6 @@ export function useBoard({ boardId }: IUseBoardProps): IUseBoardData {
       Alert.alert(`Error deleting list`);
     }
   };
+
   return { handleSaveTitle, deleteListById };
 }

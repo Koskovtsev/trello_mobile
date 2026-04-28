@@ -128,8 +128,6 @@ export const createCardThunk = createAsyncThunk<UpdateCardPayload, UpdateCardPay
       if (!cardData.title) return rejectWithValue('Card have no title');
       const response = await postCard(boardId, cardData);
       if (response !== 'Created') return rejectWithValue('No board found');
-      // eslint-disable-next-line no-console
-      console.log(`card with title ${cardData.title} and position ${cardData.position} created`);
       return payload;
     } catch (error) {
       Alert.alert(`Error creating card with title: ${cardData.title}`);
@@ -146,8 +144,6 @@ export const updateCardThunk = createAsyncThunk<UpdateCardPayload, UpdateCardPay
       if (!cardData.id) return rejectWithValue('Card id is not found');
       const response = await putCardUpdates(boardId, cardData.id, cardData);
       if (response !== 'Updated') return rejectWithValue('No card found');
-      // eslint-disable-next-line no-console
-      // console.log(`card with title ${cardData.title} and position ${cardData.position} created`);
       return payload;
     } catch (error) {
       Alert.alert(`Error updating card propertes id: ${cardData.id}`);

@@ -38,20 +38,13 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   };
   return (
     <SafeAreaView style={globalStyles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Мої дошки</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addBtn}>
-          <Text style={styles.addBtnText}>+</Text>
-        </TouchableOpacity>
-      </View>
-
       <FlatList
         data={boards}
         keyExtractor={(item) => (item.id ? item.id.toString() : Math.random().toString())}
         renderItem={({ item }) => (
           <BoardCard
             title={item.title}
-            listCount={item.lists?.length ?? 0}
+            texture={item.custom?.background ?? ''}
             onDelete={() => setDeletingBoard(item)}
             onPress={() => navigation.navigate('Board', { boardId: item.id ?? 0 })}
           />
@@ -60,6 +53,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         onRefresh={onRefresh}
         refreshing={false}
       />
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addBtn}>
+          <Text style={styles.addBtnText}>Додати дошку</Text>
+        </TouchableOpacity>
+      </View>
 
       <AddBoardModal isVisible={modalVisible} onClose={() => setModalVisible(false)} onAdd={handleAddBoard} />
       <ConfirmModal
@@ -76,20 +74,16 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  header: {
+  footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    padding: 10,
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray,
   },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.text },
   boardsList: { padding: 15 },
   addBtn: {
     backgroundColor: COLORS.primary,
-    width: 40,
+    width: 240,
     height: 40,
     borderRadius: 20,
     justifyContent: 'center',

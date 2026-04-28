@@ -11,13 +11,16 @@ interface ChangeTitleProps {
 export function ChangeTitle({ currentTitle, onTitleChanged, onCancel }: ChangeTitleProps): JSX.Element {
   const [title, setTitle] = useState(currentTitle);
   const [isError, setError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmitTitle(): Promise<void> {
+    if (isSubmitting) return;
     if (title.trim() === currentTitle) {
       onCancel();
       return;
     }
     if (!isError) {
+      setIsSubmitting(true);
       onTitleChanged(title);
     } else {
       onCancel();
@@ -40,7 +43,7 @@ export function ChangeTitle({ currentTitle, onTitleChanged, onCancel }: ChangeTi
           }}
           placeholder={!title ? 'Введіть назву...' : ''}
           autoFocus
-          // onBlur={() => handleSubmitTitle()}
+          onBlur={() => !currentTitle && handleSubmitTitle()}
           onSubmitEditing={() => handleSubmitTitle()}
         />
         {isError && <Text style={styles.errorMessage}>Назва занадто коротка або введені недопустимі символи</Text>}
@@ -66,9 +69,9 @@ const styles = StyleSheet.create({
   input: {
     color: '#fff',
     fontSize: 20,
-    // backgroundColor: '#ccc',
     fontWeight: 600,
     width: '100%',
+    minWidth: 70,
     borderBottomWidth: 1,
     borderBottomColor: '#007AFF',
     padding: 0,

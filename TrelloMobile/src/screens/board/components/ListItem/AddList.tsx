@@ -36,7 +36,12 @@ export function AddList({ width, boardId }: { width: number; boardId: number }):
           <View style={styles.listTitle}>
             <ChangeTitle currentTitle="" onTitleChanged={setTitle} onCancel={() => setVisibleChangeTitile(false)} />
           </View>
-          <Pressable style={[styles.addListButton, { width }]} onPress={handleCreateList}>
+          <Pressable
+            style={[styles.addListButton, { width }]}
+            onPress={() => {
+              handleCreateList();
+            }}
+          >
             <Text style={styles.addListText}>Додати список</Text>
           </Pressable>
         </>

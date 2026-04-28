@@ -35,7 +35,7 @@ export function CardItem({ boardId, listId, cardItem }: CardItemProps): JSX.Elem
           style={styles.cardMenuButton}
           onPress={() => {
             // eslint-disable-next-line prettier/prettier, no-console
-            console.log(`натиснуто додати картку`);
+            console.log(`натиснуто меню картки`);
           }}
         >
           <FontAwesome name="pencil" size={28} color="#000" />

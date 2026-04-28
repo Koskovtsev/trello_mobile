@@ -2,13 +2,13 @@ import React, { JSX, useState } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { COLORS } from '../styles/globalStyles';
 
-interface Props {
+interface AddBoardModalProps {
   isVisible: boolean;
   onClose: () => void;
   onAdd: (title: string) => void;
 }
 
-export function AddBoardModal({ isVisible, onClose, onAdd }: Props): JSX.Element {
+export function AddBoardModal({ isVisible, onClose, onAdd }: AddBoardModalProps): JSX.Element {
   const [title, setTitle] = useState('');
 
   const handleAdd = (): void => {
